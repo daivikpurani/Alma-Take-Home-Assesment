@@ -1,5 +1,10 @@
+# app/api/public/leads.py
+
 from fastapi import APIRouter
 
-router = APIRouter()
+router = APIRouter(prefix="/leads", tags=["public"])
 
-# Public leads endpoints will be added here
+
+@router.get("/ping")
+def public_ping():
+    return {"message": "public leads endpoint"}
