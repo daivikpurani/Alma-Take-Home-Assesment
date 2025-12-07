@@ -1,0 +1,17 @@
+fastapi>=0.115.0
+uvicorn[standard]>=0.30.0
+
+# Database + ORM
+sqlalchemy>=2.0.0
+psycopg2-binary>=2.9.9
+
+# Validation & Settings
+pydantic>=2.6.0
+pydantic-settings>=2.2.1
+
+# File handling (comes with stdlib, but python-multipart needed for uploads)
+python-multipart>=0.0.9
+
+# Tooling
+black>=24.1.1
+ruff>=0.3.1
