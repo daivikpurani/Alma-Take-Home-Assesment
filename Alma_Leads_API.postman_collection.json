@@ -1,0 +1,387 @@
+{
+	"info": {
+		"_postman_id": "alma-leads-api-collection",
+		"name": "Alma Leads API",
+		"description": "Postman collection for Alma Lead Management API. Includes public and internal endpoints with pagination support.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Health Check",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/health",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"health"
+							]
+						},
+						"description": "Check if the API is running and healthy"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Public API",
+			"item": [
+				{
+					"name": "Public Ping",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/public/leads/ping",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"public",
+								"leads",
+								"ping"
+							]
+						},
+						"description": "Check if the public API endpoint is working"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Lead",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "first_name",
+									"value": "John",
+									"type": "text"
+								},
+								{
+									"key": "last_name",
+									"value": "Doe",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "john.doe@example.com",
+									"type": "text"
+								},
+								{
+									"key": "resume",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/public/leads",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"public",
+								"leads"
+							]
+						},
+						"description": "Submit a new lead with resume file. Emails are sent asynchronously in the background."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Internal API",
+			"item": [
+				{
+					"name": "Internal Ping",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{internal_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/internal/leads/ping",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"internal",
+								"leads",
+								"ping"
+							]
+						},
+						"description": "Check if the internal API endpoint is working"
+					},
+					"response": []
+				},
+				{
+					"name": "List All Leads (Paginated)",
+					"item": [
+						{
+							"name": "Get First Page (Default)",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{internal_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/internal/leads",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"internal",
+										"leads"
+									]
+								},
+								"description": "Get the first page of leads with default pagination (page=1, page_size=10)"
+							},
+							"response": []
+						},
+						{
+							"name": "Get First Page (Custom Size)",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{internal_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/internal/leads?page=1&page_size=20",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"internal",
+										"leads"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1",
+											"description": "Page number (1-indexed)"
+										},
+										{
+											"key": "page_size",
+											"value": "20",
+											"description": "Number of items per page (max 100)"
+										}
+									]
+								},
+								"description": "Get the first page with 20 items per page"
+							},
+							"response": []
+						},
+						{
+							"name": "Get Second Page",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{internal_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/internal/leads?page=2&page_size=10",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"internal",
+										"leads"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "2",
+											"description": "Page number (1-indexed)"
+										},
+										{
+											"key": "page_size",
+											"value": "10",
+											"description": "Number of items per page (max 100)"
+										}
+									]
+								},
+								"description": "Get the second page with default page size"
+							},
+							"response": []
+						},
+						{
+							"name": "Get Page with 5 Items",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{internal_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/internal/leads?page=1&page_size=5",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"internal",
+										"leads"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1",
+											"description": "Page number (1-indexed)"
+										},
+										{
+											"key": "page_size",
+											"value": "5",
+											"description": "Number of items per page (max 100)"
+										}
+									]
+								},
+								"description": "Get the first page with 5 items per page"
+							},
+							"response": []
+						}
+					],
+					"description": "List all leads with pagination support. Default: page=1, page_size=10"
+				},
+				{
+					"name": "Get Lead by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{internal_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/internal/leads/{{lead_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"internal",
+								"leads",
+								"{{lead_id}}"
+							]
+						},
+						"description": "Get a specific lead by its UUID. Replace {{lead_id}} with an actual lead ID."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Lead State",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{internal_token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"state\": \"REACHED_OUT\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/internal/leads/{{lead_id}}/state",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"internal",
+								"leads",
+								"{{lead_id}}",
+								"state"
+							]
+						},
+						"description": "Update the state of a lead. Valid states: PENDING, REACHED_OUT. Replace {{lead_id}} with an actual lead ID."
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000",
+			"type": "string"
+		},
+		{
+			"key": "internal_token",
+			"value": "super-secret-token",
+			"type": "string"
+		},
+		{
+			"key": "lead_id",
+			"value": "00000000-0000-0000-0000-000000000000",
+			"type": "string",
+			"description": "Replace with an actual lead ID from the list leads response"
+		}
+	]
+}

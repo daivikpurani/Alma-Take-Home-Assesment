@@ -14,7 +14,7 @@ This project is structured as a realistic backend service with:
 
 ---
 
-## 🚀 Tech Stack
+## Tech Stack
 
 | Component | Technology |
 |-----------|------------|
@@ -27,7 +27,7 @@ This project is structured as a realistic backend service with:
 
 ---
 
-## 📦 Requirements
+## Requirements
 
 - Python 3.10+
 - PostgreSQL (either local or via Docker)
@@ -35,7 +35,7 @@ This project is structured as a realistic backend service with:
 
 ---
 
-## 🔐 Environment Variables
+## Environment Variables
 
 Create a `.env` file in the project root:
 
@@ -45,3 +45,13 @@ INTERNAL_API_TOKEN=super-secret-token
 APP_NAME=Leads Service
 UPLOAD_ROOT=uploads
 LOG_LEVEL=INFO
+SENDGRID_API_KEY=your-sendgrid-api-key-here
+COMPANY_NOTIFICATION_EMAIL=your-email@example.com
+ATTORNEY_EMAIL=shuo@tryalma.ai
+COMPANY_NAME=Your Company Name
+```
+
+**Important:** 
+- Configuration is loaded **only from the `.env` file** (not from OS environment variables) to ensure consistent behavior
+- The `SENDGRID_API_KEY` is optional. If not set, email functionality will be disabled and emails will be logged to the console instead
+- The `DATABASE_URL` can use either `postgresql://` or `postgresql+psycopg2://` format
