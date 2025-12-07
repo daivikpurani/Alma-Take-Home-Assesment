@@ -6,7 +6,7 @@ sqlalchemy>=2.0.0
 psycopg2-binary>=2.9.9
 
 # Validation & Settings
-pydantic>=2.6.0
+pydantic[email]>=2.6.0
 pydantic-settings>=2.2.1
 
 # File handling (comes with stdlib, but python-multipart needed for uploads)

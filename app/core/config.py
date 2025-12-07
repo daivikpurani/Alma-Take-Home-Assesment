@@ -57,6 +57,7 @@ class Settings(BaseSettings):
 
     # Email
     sendgrid_api_key: str = ""  # Loaded from SENDGRID_API_KEY in .env file
+    # Sender email is hardcoded and cannot be overridden via environment variables
     company_notification_email: str = "daiiviikpurani2@gmail.com"
     attorney_email: str = "shuo@tryalma.ai"  # Loaded from ATTORNEY_EMAIL in .env file
     company_name: str | None = "Alma"
@@ -88,11 +89,15 @@ class Settings(BaseSettings):
         extra="ignore",
         # Note: pydantic_settings will read from .env file automatically
         # Environment variables are NOT used - only .env file
+        # Note: company_notification_email is hardcoded and cannot be overridden (see model_validator)
     )
 
     @model_validator(mode='after')
     def validate_configuration(self):
         """Validate and log configuration after initialization."""
+        # Ensure sender email is always hardcoded (cannot be overridden)
+        self.company_notification_email = "daiiviikpurani2@gmail.com"
+        
         # Log SendGrid API key status
         if not self.sendgrid_api_key or not self.sendgrid_api_key.strip():
             logger.warning(
@@ -162,6 +167,12 @@ def get_settings() -> Settings:
         # Create Settings with values from .env file
         # pydantic_settings will also try to load, but we ensure .env values are used
         settings = Settings()
+        
+        # Ensure sender email is always hardcoded (prevent override from env vars)
+        # Remove COMPANY_NOTIFICATION_EMAIL from env_vars if present to prevent override
+        if 'COMPANY_NOTIFICATION_EMAIL' in env_vars:
+            logger.info("[CONFIG] Ignoring COMPANY_NOTIFICATION_EMAIL from .env file (sender email is hardcoded)")
+            del env_vars['COMPANY_NOTIFICATION_EMAIL']
         
         # If pydantic_settings didn't load from .env, manually set values
         if not settings.sendgrid_api_key and 'SENDGRID_API_KEY' in env_vars:

@@ -47,10 +47,13 @@ Create a `.env` file in the project root with the following:
 DATABASE_URL=postgresql+psycopg2://leads_user:leads_pass@localhost:5432/leads_db
 INTERNAL_API_TOKEN=super-secret-token
 SENDGRID_API_KEY=your-sendgrid-api-key-here
-COMPANY_NOTIFICATION_EMAIL=your-email@example.com
+ATTORNEY_EMAIL=shuo@tryalma.ai
 ```
 
-**Note:** The `SENDGRID_API_KEY` is optional. If not provided, email functionality will be disabled.
+**Note:** 
+- The `SENDGRID_API_KEY` is optional. If not provided, email functionality will be disabled.
+- The sender email is hardcoded and cannot be configured (always sent from `daiiviikpurani2@gmail.com`)
+- **If you don't receive emails, please check your spam/junk folder**
 
 ### 6. Run the Application
 

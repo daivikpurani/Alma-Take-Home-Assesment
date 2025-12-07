@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "alma-leads-api-collection",
 		"name": "Alma Leads API",
-		"description": "Postman collection for Alma Lead Management API. Includes public and internal endpoints with pagination support.",
+		"description": "Postman collection for Alma Lead Management API. Includes public and internal endpoints with pagination support.\n\n**Setup Instructions:**\n1. Update the `base_url` variable if your API runs on a different port\n2. Update the `internal_token` variable with your token from `.env` file (`INTERNAL_API_TOKEN`)\n3. For testing lead-specific endpoints, first run \"List All Leads\" and copy a lead ID to the `lead_id` variable\n\n**Note:** Emails are sent asynchronously in the background when creating leads.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -11,6 +11,25 @@
 			"item": [
 				{
 					"name": "Health Check",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has status and app fields\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('status');",
+									"    pm.expect(jsonData).to.have.property('app');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -25,7 +44,35 @@
 						},
 						"description": "Check if the API is running and healthy"
 					},
-					"response": []
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/health",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"health"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"ok\",\n    \"app\": \"Leads Service\"\n}"
+						}
+					]
 				}
 			]
 		},
@@ -34,6 +81,24 @@
 			"item": [
 				{
 					"name": "Public Ping",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response contains message\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('message');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -50,10 +115,70 @@
 						},
 						"description": "Check if the public API endpoint is working"
 					},
-					"response": []
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/public/leads/ping",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"public",
+										"leads",
+										"ping"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"public leads endpoint\"\n}"
+						}
+					]
 				},
 				{
 					"name": "Create Lead",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Response contains lead data\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('id');",
+									"    pm.expect(jsonData).to.have.property('first_name');",
+									"    pm.expect(jsonData).to.have.property('last_name');",
+									"    pm.expect(jsonData).to.have.property('email');",
+									"    pm.expect(jsonData).to.have.property('resume_path');",
+									"    pm.expect(jsonData).to.have.property('state');",
+									"    pm.expect(jsonData.state).to.eql('PENDING');",
+									"});",
+									"",
+									"// Save lead ID for use in other requests",
+									"if (pm.response.code === 201) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.collectionVariables.set('lead_id', jsonData.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -63,22 +188,26 @@
 								{
 									"key": "first_name",
 									"value": "John",
-									"type": "text"
+									"type": "text",
+									"description": "Lead's first name"
 								},
 								{
 									"key": "last_name",
 									"value": "Doe",
-									"type": "text"
+									"type": "text",
+									"description": "Lead's last name"
 								},
 								{
 									"key": "email",
 									"value": "john.doe@example.com",
-									"type": "text"
+									"type": "text",
+									"description": "Lead's email address"
 								},
 								{
 									"key": "resume",
 									"type": "file",
-									"src": []
+									"src": [],
+									"description": "Resume file (PDF, DOC, etc.)"
 								}
 							]
 						},
@@ -92,7 +221,7 @@
 								"leads"
 							]
 						},
-						"description": "Submit a new lead with resume file. Emails are sent asynchronously in the background."
+						"description": "Submit a new lead with resume file.\n\n**Note:** Emails are sent asynchronously in the background. The API responds immediately without waiting for emails to be sent.\n\n**Email Recipients:**\n- The lead receives a thank you email\n- The attorney (configured via `ATTORNEY_EMAIL` in `.env`) receives a notification"
 					},
 					"response": []
 				}
@@ -103,6 +232,24 @@
 			"item": [
 				{
 					"name": "Internal Ping",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response contains message\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('message');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [
@@ -124,15 +271,88 @@
 								"ping"
 							]
 						},
-						"description": "Check if the internal API endpoint is working"
+						"description": "Check if the internal API endpoint is working. Requires authentication token."
 					},
-					"response": []
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{internal_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/internal/leads/ping",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"internal",
+										"leads",
+										"ping"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"internal leads endpoint\"\n}"
+						}
+					]
 				},
 				{
 					"name": "List All Leads (Paginated)",
 					"item": [
 						{
 							"name": "Get First Page (Default)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Response has pagination structure\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData).to.have.property('items');",
+											"    pm.expect(jsonData).to.have.property('total');",
+											"    pm.expect(jsonData).to.have.property('page');",
+											"    pm.expect(jsonData).to.have.property('page_size');",
+											"    pm.expect(jsonData).to.have.property('total_pages');",
+											"    pm.expect(jsonData.page).to.eql(1);",
+											"    pm.expect(jsonData.page_size).to.eql(10);",
+											"});",
+											"",
+											"pm.test(\"Items is an array\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.items).to.be.an('array');",
+											"});",
+											"",
+											"// Save first lead ID if available",
+											"if (pm.response.code === 200) {",
+											"    var jsonData = pm.response.json();",
+											"    if (jsonData.items && jsonData.items.length > 0) {",
+											"        pm.collectionVariables.set('lead_id', jsonData.items[0].id);",
+											"    }",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
 							"request": {
 								"method": "GET",
 								"header": [
@@ -159,6 +379,24 @@
 						},
 						{
 							"name": "Get First Page (Custom Size)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Page size is 20\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.page_size).to.eql(20);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
 							"request": {
 								"method": "GET",
 								"header": [
@@ -182,12 +420,12 @@
 										{
 											"key": "page",
 											"value": "1",
-											"description": "Page number (1-indexed)"
+											"description": "Page number (1-indexed, minimum: 1)"
 										},
 										{
 											"key": "page_size",
 											"value": "20",
-											"description": "Number of items per page (max 100)"
+											"description": "Number of items per page (minimum: 1, maximum: 100)"
 										}
 									]
 								},
@@ -197,6 +435,24 @@
 						},
 						{
 							"name": "Get Second Page",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Page number is 2\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.page).to.eql(2);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
 							"request": {
 								"method": "GET",
 								"header": [
@@ -235,6 +491,24 @@
 						},
 						{
 							"name": "Get Page with 5 Items",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Page size is 5\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.page_size).to.eql(5);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
 							"request": {
 								"method": "GET",
 								"header": [
@@ -270,12 +544,134 @@
 								"description": "Get the first page with 5 items per page"
 							},
 							"response": []
+						},
+						{
+							"name": "Test Invalid Page (Should Fail)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 422\", function () {",
+											"    pm.response.to.have.status(422);",
+											"});",
+											"",
+											"pm.test(\"Error message indicates validation failure\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData).to.have.property('detail');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{internal_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/internal/leads?page=-1",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"internal",
+										"leads"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "-1",
+											"description": "Invalid: page must be >= 1"
+										}
+									]
+								},
+								"description": "Test pagination validation - should return 422 for invalid page number"
+							},
+							"response": []
+						},
+						{
+							"name": "Test Invalid Page Size (Should Fail)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 422\", function () {",
+											"    pm.response.to.have.status(422);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{internal_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/internal/leads?page_size=200",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"internal",
+										"leads"
+									],
+									"query": [
+										{
+											"key": "page_size",
+											"value": "200",
+											"description": "Invalid: page_size must be <= 100"
+										}
+									]
+								},
+								"description": "Test pagination validation - should return 422 for page_size exceeding maximum (100)"
+							},
+							"response": []
 						}
 					],
-					"description": "List all leads with pagination support. Default: page=1, page_size=10"
+					"description": "List all leads with pagination support.\n\n**Pagination Parameters:**\n- `page` (optional, default: 1) - Page number (1-indexed, minimum: 1)\n- `page_size` (optional, default: 10) - Number of items per page (minimum: 1, maximum: 100)\n\n**Response Format:**\n```json\n{\n  \"items\": [...],\n  \"total\": 50,\n  \"page\": 1,\n  \"page_size\": 10,\n  \"total_pages\": 5\n}\n```"
 				},
 				{
 					"name": "Get Lead by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response contains lead data\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('id');",
+									"    pm.expect(jsonData).to.have.property('first_name');",
+									"    pm.expect(jsonData).to.have.property('last_name');",
+									"    pm.expect(jsonData).to.have.property('email');",
+									"    pm.expect(jsonData).to.have.property('resume_path');",
+									"    pm.expect(jsonData).to.have.property('state');",
+									"    pm.expect(jsonData).to.have.property('created_at');",
+									"    pm.expect(jsonData).to.have.property('updated_at');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [
@@ -297,12 +693,30 @@
 								"{{lead_id}}"
 							]
 						},
-						"description": "Get a specific lead by its UUID. Replace {{lead_id}} with an actual lead ID."
+						"description": "Get a specific lead by its UUID.\n\n**Note:** Replace `{{lead_id}}` with an actual lead ID. You can get a lead ID by running \"List All Leads\" first - the collection will automatically save the first lead ID to the `lead_id` variable."
 					},
 					"response": []
 				},
 				{
 					"name": "Update Lead State",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"State is updated\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.state).to.eql('REACHED_OUT');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "PATCH",
 						"header": [
@@ -339,7 +753,7 @@
 								"state"
 							]
 						},
-						"description": "Update the state of a lead. Valid states: PENDING, REACHED_OUT. Replace {{lead_id}} with an actual lead ID."
+						"description": "Update the state of a lead.\n\n**Valid States:**\n- `PENDING` - Just submitted, no one has contacted them yet\n- `REACHED_OUT` - Team member has contacted this person\n\n**Note:** Replace `{{lead_id}}` with an actual lead ID. You can get a lead ID by running \"List All Leads\" first."
 					},
 					"response": []
 				}
@@ -370,18 +784,20 @@
 		{
 			"key": "base_url",
 			"value": "http://localhost:8000",
-			"type": "string"
+			"type": "string",
+			"description": "Base URL for the API. Default: http://localhost:8000"
 		},
 		{
 			"key": "internal_token",
 			"value": "super-secret-token",
-			"type": "string"
+			"type": "string",
+			"description": "Internal API token from .env file (INTERNAL_API_TOKEN). Update this with your actual token."
 		},
 		{
 			"key": "lead_id",
 			"value": "00000000-0000-0000-0000-000000000000",
 			"type": "string",
-			"description": "Replace with an actual lead ID from the list leads response"
+			"description": "Lead ID for testing individual lead endpoints. This is automatically set when you run \"List All Leads\" or \"Create Lead\" requests."
 		}
 	]
 }

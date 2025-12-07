@@ -107,8 +107,8 @@ Files are saved in the `uploads/` folder. You can change this location in the `.
 
 1. **The person who submitted** - Gets a "thank you" email
 2. **The team member** - Gets notified about the new submission
-   - Currently hardcoded to `daivikpurani1@gmail.com`
-   - The sender email comes from `COMPANY_NOTIFICATION_EMAIL` in `.env`
+   - Configured via `ATTORNEY_EMAIL` in `.env` (default: `shuo@tryalma.ai`)
+   - The sender email is hardcoded to `daiiviikpurani2@gmail.com` (cannot be configured)
 
 **What Happens if Email Fails?**
 

@@ -46,7 +46,6 @@ APP_NAME=Leads Service
 UPLOAD_ROOT=uploads
 LOG_LEVEL=INFO
 SENDGRID_API_KEY=your-sendgrid-api-key-here
-COMPANY_NOTIFICATION_EMAIL=your-email@example.com
 ATTORNEY_EMAIL=shuo@tryalma.ai
 COMPANY_NAME=Your Company Name
 ```
@@ -55,3 +54,5 @@ COMPANY_NAME=Your Company Name
 - Configuration is loaded **only from the `.env` file** (not from OS environment variables) to ensure consistent behavior
 - The `SENDGRID_API_KEY` is optional. If not set, email functionality will be disabled and emails will be logged to the console instead
 - The `DATABASE_URL` can use either `postgresql://` or `postgresql+psycopg2://` format
+- The sender email is hardcoded and cannot be configured (always sent from `daiiviikpurani2@gmail.com`)
+- **Note:** If you don't receive emails, please check your spam/junk folder

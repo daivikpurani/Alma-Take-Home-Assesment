@@ -69,7 +69,7 @@ Copy and paste this into the `.env` file:
 DATABASE_URL=postgresql://leads_user:leads_pass@localhost:5432/leads_db
 INTERNAL_API_TOKEN=super-secret-token
 SENDGRID_API_KEY=your-sendgrid-api-key-here
-COMPANY_NOTIFICATION_EMAIL=your-email@example.com
+ATTORNEY_EMAIL=shuo@tryalma.ai
 COMPANY_NAME=Alma
 ```
 
@@ -78,13 +78,15 @@ COMPANY_NAME=Alma
 - **DATABASE_URL**: How to connect to your database (use the one above if you used Docker)
 - **INTERNAL_API_TOKEN**: A secret password to access internal endpoints (change this to something secure)
 - **SENDGRID_API_KEY**: Your SendGrid API key for sending emails (optional - leave empty if you don't have one)
-- **COMPANY_NOTIFICATION_EMAIL**: The email address that will send emails (needed if using SendGrid)
+- **ATTORNEY_EMAIL**: The email address to receive lead notifications (default: shuo@tryalma.ai)
 - **COMPANY_NAME**: Your company name (used in emails)
 
 **Important notes:**
 - If you don't have a SendGrid API key, that's okay! The app will still work, but emails will just be printed to the console instead of being sent.
 - All settings are read from this `.env` file only (not from your computer's environment variables).
 - **Email sending is asynchronous** - emails are sent in the background, so the API responds immediately without waiting for emails to be sent.
+- The sender email is hardcoded and cannot be configured (always sent from `daiiviikpurani2@gmail.com`)
+- **If you don't receive emails, please check your spam/junk folder**
 
 ---
 
@@ -256,11 +258,12 @@ docker-compose exec postgres psql -U leads_user -d leads_db
 
 **Check your `.env` file:**
 - Make sure `SENDGRID_API_KEY` is set (if you want real emails)
-- Make sure `COMPANY_NOTIFICATION_EMAIL` is set
 
 **Remember:** 
 - If you don't have a SendGrid API key, emails will just be printed to the console. This is normal and the app will still work!
 - Emails are sent asynchronously in the background, so they may take a moment to be delivered after the API responds. Check the application logs to see email sending status.
+- **If you don't receive emails, please check your spam/junk folder**
+- The sender email is hardcoded (always sent from `daiiviikpurani2@gmail.com`) and cannot be configured
 
 ### Problem: Port 8000 is already in use
 
