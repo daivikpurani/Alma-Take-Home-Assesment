@@ -1,12 +1,13 @@
 # app/api/internal/leads.py
 
 from fastapi import APIRouter, Depends
-from app.api.deps import get_current_internal_user
+from app.api.deps import require_internal_token
+
 
 router = APIRouter(
     prefix="/leads",
     tags=["internal"],
-    dependencies=[Depends(get_current_internal_user)],
+    dependencies=[Depends(require_internal_token)],
 )
 
 

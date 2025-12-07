@@ -10,6 +10,7 @@ from app.db.session import get_engine
 
 from app.api.public.leads import router as public_leads_router
 from app.api.internal.leads import router as internal_leads_router
+from app.api.routes.lead_routes import router as lead_router
 
 
 @asynccontextmanager
@@ -44,6 +45,7 @@ def create_app() -> FastAPI:
         
     app.include_router(public_leads_router, prefix="/api/public")
     app.include_router(internal_leads_router, prefix="/api/internal")
+    app.include_router(lead_router)
 
     return app
 

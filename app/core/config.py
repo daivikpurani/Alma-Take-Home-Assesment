@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     database_url: str = "postgresql://leads_user:leads_pass@localhost:5432/leads_db"
 
     # Auth
-    internal_api_token: str = "super-secret-token"
+    internal_api_token: str = "abc123"
 
     # Storage
     upload_root: str = "uploads"

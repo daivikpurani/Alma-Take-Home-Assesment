@@ -1,31 +1,27 @@
 # app/api/deps.py
 
 from fastapi import Depends, HTTPException, status
-from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+
+from app.core.config import get_settings
 from app.storage.local_storage_service import LocalStorageService
-from app.core.config import get_settings, Settings
+from app.db.session import get_db  # <-- re-export
 
 
-security = HTTPBearer()
+# STORAGE DEPENDENCY
+def get_storage():
+    return LocalStorageService()
 
 
-def get_current_internal_user(
-    credentials: HTTPAuthorizationCredentials = Depends(security),
-    settings: Settings = Depends(get_settings),
+# AUTH FOR INTERNAL ROUTES
+bearer_scheme = HTTPBearer()
+
+def require_internal_token(
+    credentials: HTTPAuthorizationCredentials = Depends(bearer_scheme),
+    settings = Depends(get_settings),
 ):
-    """
-    Validate Bearer token for internal UI routes.
-    """
     if credentials.credentials != settings.internal_api_token:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Unauthorized",
+            detail="Invalid or missing internal API token",
         )
-    return {"role": "attorney"}  # placeholder user object
-
-
-
-
-
-def get_storage():
-    return LocalStorageService()
