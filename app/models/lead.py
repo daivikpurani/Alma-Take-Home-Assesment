@@ -1,33 +1,30 @@
-# app/models/lead.py
+# app/schemas/lead.py
 
-import uuid
-from sqlalchemy import Column, String, Enum, DateTime, func
-from sqlalchemy.dialects.postgresql import UUID
-from app.db.base import Base
+from uuid import UUID
+from datetime import datetime
+from pydantic import BaseModel, EmailStr, Field
 from app.models.lead_state import LeadState
 
 
-class Lead(Base):
-    __tablename__ = "leads"
+class LeadCreate(BaseModel):
+    first_name: str = Field(..., max_length=100)
+    last_name: str = Field(..., max_length=100)
+    email: EmailStr
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, nullable=False)
 
-    first_name = Column(String(100), nullable=False)
-    last_name = Column(String(100), nullable=False)
-    email = Column(String(255), nullable=False)
+class LeadResponse(BaseModel):
+    id: UUID
+    first_name: str
+    last_name: str
+    email: str
+    resume_path: str
+    state: LeadState
+    created_at: datetime
+    updated_at: datetime
 
-    resume_path = Column(String(500), nullable=False)
+    class Config:
+        from_attributes = True
 
-    state = Column(
-        Enum(LeadState, name="lead_state"),
-        nullable=False,
-        default=LeadState.PENDING,
-    )
 
-    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
-    updated_at = Column(
-        DateTime(timezone=True),
-        server_default=func.now(),
-        onupdate=func.now(),
-        nullable=False,
-    )
+class LeadStateUpdate(BaseModel):
+    state: LeadState
