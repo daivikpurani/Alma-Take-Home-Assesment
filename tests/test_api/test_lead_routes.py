@@ -1,5 +1,6 @@
 # tests/test_api/test_lead_routes.py
 
+import math
 import pytest
 from fastapi.testclient import TestClient
 from io import BytesIO
@@ -95,10 +96,18 @@ class TestListLeads:
         response = test_client.get("/leads", headers=headers)
         
         assert response.status_code == 200
-        leads = response.json()
-        assert isinstance(leads, list)
-        assert len(leads) >= 1
-        assert leads[0]["email"] == "jane.smith@example.com"
+        data = response.json()
+        assert "items" in data
+        assert "total" in data
+        assert "page" in data
+        assert "page_size" in data
+        assert "total_pages" in data
+        assert isinstance(data["items"], list)
+        assert len(data["items"]) >= 1
+        assert data["items"][0]["email"] == "jane.smith@example.com"
+        assert data["total"] >= 1
+        assert data["page"] == 1
+        assert data["page_size"] == 10
     
     def test_list_leads_without_token(self, test_client: TestClient):
         """Test listing leads without authentication token."""
@@ -119,8 +128,64 @@ class TestListLeads:
         response = test_client.get("/leads", headers=headers)
         
         assert response.status_code == 200
-        leads = response.json()
-        assert isinstance(leads, list)
+        data = response.json()
+        assert "items" in data
+        assert isinstance(data["items"], list)
+        assert data["total"] == 0
+        assert data["page"] == 1
+        assert data["page_size"] == 10
+        assert data["total_pages"] == 0
+    
+    def test_list_leads_pagination(self, test_client: TestClient, test_db_session):
+        """Test pagination parameters."""
+        from app.models.lead import Lead
+        
+        # Create multiple leads
+        for i in range(15):
+            lead = Lead(
+                first_name=f"Test{i}",
+                last_name="User",
+                email=f"test{i}@example.com",
+                resume_path=f"test_resume_{i}.pdf",
+                state=LeadState.PENDING,
+            )
+            test_db_session.add(lead)
+        test_db_session.commit()
+        
+        headers = {"Authorization": "Bearer test_token_123"}
+        
+        # Test first page
+        response = test_client.get("/leads?page=1&page_size=5", headers=headers)
+        assert response.status_code == 200
+        data = response.json()
+        assert len(data["items"]) == 5
+        assert data["page"] == 1
+        assert data["page_size"] == 5
+        assert data["total"] >= 15
+        assert data["total_pages"] == math.ceil(data["total"] / 5)
+        
+        # Test second page
+        response = test_client.get("/leads?page=2&page_size=5", headers=headers)
+        assert response.status_code == 200
+        data = response.json()
+        assert len(data["items"]) == 5
+        assert data["page"] == 2
+    
+    def test_list_leads_pagination_invalid_params(self, test_client: TestClient):
+        """Test pagination with invalid parameters."""
+        headers = {"Authorization": "Bearer test_token_123"}
+        
+        # Test negative page
+        response = test_client.get("/leads?page=-1", headers=headers)
+        assert response.status_code == 422
+        
+        # Test page_size too large
+        response = test_client.get("/leads?page_size=200", headers=headers)
+        assert response.status_code == 422
+        
+        # Test zero page_size
+        response = test_client.get("/leads?page_size=0", headers=headers)
+        assert response.status_code == 422
 
 
 @pytest.mark.integration

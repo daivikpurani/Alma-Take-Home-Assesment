@@ -42,8 +42,8 @@ class TestLeadServiceCreateLead:
         assert db_lead is not None
         assert db_lead.email == "test.user@example.com"
         
-        # Verify email service was called (twice - to prospect and company)
-        assert mock_email_service.call_count == 2
+        # Note: Emails are now sent asynchronously via background tasks in the API layer,
+        # not directly from create_lead, so we don't check email calls here
     
     def test_create_lead_sets_initial_state(self, test_db_session: Session, mock_email_service):
         """Test that created lead has PENDING state."""

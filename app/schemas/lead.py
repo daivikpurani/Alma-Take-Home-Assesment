@@ -28,3 +28,14 @@ class LeadResponse(BaseModel):
 
 class LeadStateUpdate(BaseModel):
     state: LeadState
+
+
+class PaginatedLeadResponse(BaseModel):
+    items: list[LeadResponse]
+    total: int
+    page: int
+    page_size: int
+    total_pages: int
+
+    class Config:
+        from_attributes = True

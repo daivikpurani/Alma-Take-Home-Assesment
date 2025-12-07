@@ -1,7 +1,7 @@
 # app/api/public/leads.py
 
 import logging
-from fastapi import APIRouter, UploadFile, File, Form, Depends, HTTPException, status
+from fastapi import APIRouter, UploadFile, File, Form, Depends, HTTPException, status, BackgroundTasks
 from sqlalchemy.orm import Session
 import uuid
 import os
@@ -24,6 +24,7 @@ def public_ping():
 # ---- Create a Lead (Prospect Form) ----
 @router.post("", response_model=LeadResponse, status_code=status.HTTP_201_CREATED)
 async def create_lead_public(
+    background_tasks: BackgroundTasks,
     first_name: str = Form(...),
     last_name: str = Form(...),
     email: str = Form(...),
@@ -63,9 +64,14 @@ async def create_lead_public(
             detail=f"Invalid input data: {str(e)}"
         )
 
-    # 3) Persist + send emails
+    # 3) Persist lead
     try:
         lead = LeadService.create_lead(db=db, data=lead_data, resume_path=file_path)
+        
+        # 4) Schedule email sending as background tasks (async, non-blocking)
+        background_tasks.add_task(LeadService.send_prospect_email, lead)
+        background_tasks.add_task(LeadService.send_company_notification_email, lead)
+        
         return lead
     except Exception as e:
         logger.error(
