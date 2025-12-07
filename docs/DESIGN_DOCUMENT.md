@@ -20,11 +20,11 @@ The system needs to:
 
 ### The Big Picture
 
-Think of the system like a restaurant:
-- **Routers** = Waiters (they take orders/requests)
-- **Services** = Chefs (they do the actual work)
-- **Database** = Pantry (stores all the data)
-- **Storage** = File cabinet (stores resume files)
+The system follows a standard layered architecture:
+- **Routers** - Handle HTTP requests and responses
+- **Services** - Contain the business logic
+- **Database** - Stores persistent data
+- **Storage** - Manages file uploads
 
 ### Main Parts of the System
 
@@ -49,7 +49,7 @@ app/
 │   └── deps.py       # Helper functions for database, auth, etc.
 ├── models/            # Database table definitions
 ├── schemas/          # Data validation rules
-├── services/         # Business logic (the "chefs")
+├── services/         # Business logic
 ├── db/               # Database connection setup
 ├── core/             # Configuration and settings
 ├── storage/          # File storage handling
@@ -173,7 +173,7 @@ Here are some things that could be added later:
 
 ---
 
-## Trade-offs We Made
+## Trade-offs I Made
 
 Every design decision has pros and cons. Here's what we chose and why:
 
@@ -185,7 +185,6 @@ Every design decision has pros and cons. Here's what we chose and why:
 | Simple token auth | Not good for many users | Meets requirements, easy to upgrade later |
 | Only use `.env` file | Less flexible for deployment | Simpler for reviewers, consistent behavior |
 | Hardcoded attorney email | Can't change without code | Meets requirement, can be made configurable later |
-| ~~Send emails immediately~~ | ~~Slows down API response~~ | **Now async** - emails sent in background, API responds immediately |
 
 ---
 
