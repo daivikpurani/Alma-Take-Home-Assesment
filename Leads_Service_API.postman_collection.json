@@ -1,0 +1,616 @@
+{
+	"info": {
+		"_postman_id": "leads-service-api-collection",
+		"name": "Leads Service API",
+		"description": "Complete API collection for the Leads Service - includes public endpoints for lead submission and internal endpoints for lead management",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{internal_api_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000",
+			"type": "string"
+		},
+		{
+			"key": "internal_api_token",
+			"value": "OpWAp0HHe5BbtLWJM8PFq4xNJ44OnOuZrIjpl_9_MeE",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Health Check",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/health",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"health"
+							]
+						},
+						"description": "Check if the service is running and healthy"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/health",
+									"host": ["{{base_url}}"],
+									"path": ["health"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"ok\",\n    \"app\": \"Leads Service\"\n}"
+						}
+					]
+				}
+			],
+			"description": "Public health check endpoint"
+		},
+		{
+			"name": "Public Leads API",
+			"item": [
+				{
+					"name": "Ping Public Leads",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/public/leads/ping",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"public",
+								"leads",
+								"ping"
+							]
+						},
+						"description": "Health check for public leads endpoint"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/public/leads/ping",
+									"host": ["{{base_url}}"],
+									"path": ["public", "leads", "ping"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"public leads endpoint\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Create Lead (Submit Resume)",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "first_name",
+									"value": "John",
+									"type": "text",
+									"description": "First name of the lead"
+								},
+								{
+									"key": "last_name",
+									"value": "Doe",
+									"type": "text",
+									"description": "Last name of the lead"
+								},
+								{
+									"key": "email",
+									"value": "john.doe@example.com",
+									"type": "text",
+									"description": "Email address of the lead"
+								},
+								{
+									"key": "resume",
+									"type": "file",
+									"src": [],
+									"description": "Resume file (PDF, DOC, DOCX, etc.)"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/public/leads",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"public",
+								"leads"
+							]
+						},
+						"description": "Submit a new lead with resume. This is a public endpoint that doesn't require authentication."
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "first_name",
+											"value": "John",
+											"type": "text"
+										},
+										{
+											"key": "last_name",
+											"value": "Doe",
+											"type": "text"
+										},
+										{
+											"key": "email",
+											"value": "john.doe@example.com",
+											"type": "text"
+										},
+										{
+											"key": "resume",
+											"type": "file",
+											"src": []
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/public/leads",
+									"host": ["{{base_url}}"],
+									"path": ["public", "leads"]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": \"123e4567-e89b-12d3-a456-426614174000\",\n    \"first_name\": \"John\",\n    \"last_name\": \"Doe\",\n    \"email\": \"john.doe@example.com\",\n    \"resume_path\": \"uploads/123e4567-e89b-12d3-a456-426614174000.pdf\",\n    \"state\": \"PENDING\",\n    \"created_at\": \"2024-01-15T10:30:00Z\",\n    \"updated_at\": \"2024-01-15T10:30:00Z\"\n}"
+						}
+					]
+				}
+			],
+			"description": "Public endpoints for lead submission (no authentication required)"
+		},
+		{
+			"name": "Internal Leads API",
+			"item": [
+				{
+					"name": "Ping Internal Leads",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/internal/leads/ping",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"internal",
+								"leads",
+								"ping"
+							]
+						},
+						"description": "Health check for internal leads endpoint. Requires Bearer token authentication."
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{internal_api_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/internal/leads/ping",
+									"host": ["{{base_url}}"],
+									"path": ["api", "internal", "leads", "ping"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"internal leads endpoint\"\n}"
+						},
+						{
+							"name": "Unauthorized - Missing Token",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/internal/leads/ping",
+									"host": ["{{base_url}}"],
+									"path": ["api", "internal", "leads", "ping"]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"detail\": \"Invalid or missing internal API token\"\n}"
+						}
+					]
+				},
+				{
+					"name": "List All Leads",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/internal/leads",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"internal",
+								"leads"
+							]
+						},
+						"description": "Get a list of all leads. Requires Bearer token authentication."
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{internal_api_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/internal/leads",
+									"host": ["{{base_url}}"],
+									"path": ["api", "internal", "leads"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"id\": \"123e4567-e89b-12d3-a456-426614174000\",\n        \"first_name\": \"John\",\n        \"last_name\": \"Doe\",\n        \"email\": \"john.doe@example.com\",\n        \"resume_path\": \"uploads/123e4567-e89b-12d3-a456-426614174000.pdf\",\n        \"state\": \"PENDING\",\n        \"created_at\": \"2024-01-15T10:30:00Z\",\n        \"updated_at\": \"2024-01-15T10:30:00Z\"\n    },\n    {\n        \"id\": \"223e4567-e89b-12d3-a456-426614174001\",\n        \"first_name\": \"Jane\",\n        \"last_name\": \"Smith\",\n        \"email\": \"jane.smith@example.com\",\n        \"resume_path\": \"uploads/223e4567-e89b-12d3-a456-426614174001.pdf\",\n        \"state\": \"REACHED_OUT\",\n        \"created_at\": \"2024-01-14T09:20:00Z\",\n        \"updated_at\": \"2024-01-14T15:45:00Z\"\n    }\n]"
+						}
+					]
+				},
+				{
+					"name": "Get Lead by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/internal/leads/:lead_id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"internal",
+								"leads",
+								":lead_id"
+							],
+							"variable": [
+								{
+									"key": "lead_id",
+									"value": "00000000-0000-0000-0000-000000000000",
+									"description": "UUID of the lead"
+								}
+							]
+						},
+						"description": "Get a specific lead by its UUID. Requires Bearer token authentication."
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{internal_api_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/internal/leads/123e4567-e89b-12d3-a456-426614174000",
+									"host": ["{{base_url}}"],
+									"path": ["api", "internal", "leads", "123e4567-e89b-12d3-a456-426614174000"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": \"123e4567-e89b-12d3-a456-426614174000\",\n    \"first_name\": \"John\",\n    \"last_name\": \"Doe\",\n    \"email\": \"john.doe@example.com\",\n    \"resume_path\": \"uploads/123e4567-e89b-12d3-a456-426614174000.pdf\",\n    \"state\": \"PENDING\",\n    \"created_at\": \"2024-01-15T10:30:00Z\",\n    \"updated_at\": \"2024-01-15T10:30:00Z\"\n}"
+						},
+						{
+							"name": "Not Found",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{internal_api_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/internal/leads/00000000-0000-0000-0000-000000000000",
+									"host": ["{{base_url}}"],
+									"path": ["api", "internal", "leads", "00000000-0000-0000-0000-000000000000"]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"detail\": \"Lead not found\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Update Lead State",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"state\": \"PENDING\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/internal/leads/:lead_id/state",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"internal",
+								"leads",
+								":lead_id",
+								"state"
+							],
+							"variable": [
+								{
+									"key": "lead_id",
+									"value": "00000000-0000-0000-0000-000000000000",
+									"description": "UUID of the lead"
+								}
+							]
+						},
+						"description": "Update the state of a lead. Valid states are: PENDING, REACHED_OUT. Requires Bearer token authentication."
+					},
+					"response": [
+						{
+							"name": "Success Response - Update to PENDING",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{internal_api_token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"state\": \"PENDING\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/internal/leads/123e4567-e89b-12d3-a456-426614174000/state",
+									"host": ["{{base_url}}"],
+									"path": ["api", "internal", "leads", "123e4567-e89b-12d3-a456-426614174000", "state"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": \"123e4567-e89b-12d3-a456-426614174000\",\n    \"first_name\": \"John\",\n    \"last_name\": \"Doe\",\n    \"email\": \"john.doe@example.com\",\n    \"resume_path\": \"uploads/123e4567-e89b-12d3-a456-426614174000.pdf\",\n    \"state\": \"PENDING\",\n    \"created_at\": \"2024-01-15T10:30:00Z\",\n    \"updated_at\": \"2024-01-15T11:45:00Z\"\n}"
+						},
+						{
+							"name": "Success Response - Update to REACHED_OUT",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{internal_api_token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"state\": \"REACHED_OUT\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/internal/leads/123e4567-e89b-12d3-a456-426614174000/state",
+									"host": ["{{base_url}}"],
+									"path": ["api", "internal", "leads", "123e4567-e89b-12d3-a456-426614174000", "state"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": \"123e4567-e89b-12d3-a456-426614174000\",\n    \"first_name\": \"John\",\n    \"last_name\": \"Doe\",\n    \"email\": \"john.doe@example.com\",\n    \"resume_path\": \"uploads/123e4567-e89b-12d3-a456-426614174000.pdf\",\n    \"state\": \"REACHED_OUT\",\n    \"created_at\": \"2024-01-15T10:30:00Z\",\n    \"updated_at\": \"2024-01-15T11:45:00Z\"\n}"
+						},
+						{
+							"name": "Not Found",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{internal_api_token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"state\": \"PENDING\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/internal/leads/00000000-0000-0000-0000-000000000000/state",
+									"host": ["{{base_url}}"],
+									"path": ["api", "internal", "leads", "00000000-0000-0000-0000-000000000000", "state"]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"detail\": \"Lead not found\"\n}"
+						}
+					]
+				}
+			],
+			"description": "Internal endpoints for lead management (requires Bearer token authentication)"
+		}
+	]
+}
