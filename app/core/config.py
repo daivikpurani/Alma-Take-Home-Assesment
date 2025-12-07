@@ -53,7 +53,7 @@ class Settings(BaseSettings):
     upload_root: str = "uploads"
 
     # Email
-    sendgrid_api_key: str = "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"
+    sendgrid_api_key: str = ""
     company_notification_email: str = "daiiviikpurani2@gmail.com"
     company_name: str | None = "Alma"
 
