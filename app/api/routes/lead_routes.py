@@ -6,9 +6,7 @@ from sqlalchemy.orm import Session
 from app.api.deps import get_db, get_storage, require_internal_token
 from app.schemas.lead import LeadCreate, LeadResponse, LeadStateUpdate
 from app.services.lead_service import LeadService
-from app.services.email_service import EmailService
 from app.storage.storage_service import StorageService
-import asyncio
 
 router = APIRouter(prefix="/leads", tags=["Leads"])
 
@@ -32,21 +30,8 @@ async def create_lead(
     # Save file locally, get path
     resume_path = await storage.save(resume)
 
-    # Persist lead in DB
+    # Persist lead in DB and send emails
     lead = LeadService.create_lead(db=db, data=lead_create, resume_path=resume_path)
-
-    # send prospect email + attorney email
-    asyncio.create_task(EmailService.send_email(
-        to=lead.email,
-        subject="Thank you for your submission!",
-        body="We have received your information."
-    ))
-
-    asyncio.create_task(EmailService.send_email(
-        to="attorney@example.com",
-        subject="New lead submitted",
-        body=f"Lead {lead.first_name} {lead.last_name} has submitted information."
-    ))
 
     return lead
 

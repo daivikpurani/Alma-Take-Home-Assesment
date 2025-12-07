@@ -43,7 +43,7 @@ def create_app() -> FastAPI:
             "app": settings.app_name,
         }
         
-    app.include_router(public_leads_router, prefix="/api/public")
+    app.include_router(public_leads_router, prefix="/public")
     app.include_router(internal_leads_router, prefix="/api/internal")
     app.include_router(lead_router)
 

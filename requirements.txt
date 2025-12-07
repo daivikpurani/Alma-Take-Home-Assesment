@@ -12,6 +12,9 @@ pydantic-settings>=2.2.1
 # File handling (comes with stdlib, but python-multipart needed for uploads)
 python-multipart>=0.0.9
 
+# Email
+sendgrid>=6.11.0
+
 # Tooling
 black>=24.1.1
 ruff>=0.3.1
