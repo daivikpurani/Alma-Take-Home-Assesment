@@ -77,13 +77,16 @@ class EmailService:
             print(f"{'='*60}\n")
             
         except Exception as e:
+            # Log full error with stack trace
+            logger.error(
+                f"SendGrid Email Failure to {to_email}: {str(e)}",
+                exc_info=True,  # This includes full stack trace
+                extra={
+                    "to_email": to_email,
+                    "subject": subject,
+                }
+            )
             # Fallback to console logging on error
-            error_msg = f"SendGrid Email Failure: {str(e)}"
-            logger.error(error_msg)
-            print(f"\n{'='*60}")
-            print(f"[EMAIL-SIMULATION - SendGrid Error]")
-            print(f"Error: {error_msg}")
-            print(f"To: {to_email}")
-            print(f"Subject: {subject}")
-            print(f"Body:\n{content}")
-            print(f"{'='*60}\n")
+            logger.warning(
+                f"[EMAIL-SIMULATION - SendGrid Error] To={to_email} | Subject={subject}"
+            )
