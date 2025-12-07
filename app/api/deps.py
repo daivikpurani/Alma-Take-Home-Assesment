@@ -2,7 +2,7 @@
 
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-
+from app.storage.local_storage_service import LocalStorageService
 from app.core.config import get_settings, Settings
 
 
@@ -22,3 +22,10 @@ def get_current_internal_user(
             detail="Unauthorized",
         )
     return {"role": "attorney"}  # placeholder user object
+
+
+
+
+
+def get_storage():
+    return LocalStorageService()
