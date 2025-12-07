@@ -170,6 +170,8 @@ Here are some things that could be added later:
 | User accounts with OAuth2 | Support multiple team members with their own accounts |
 | ~~Pagination for leads list~~ | ~~Better performance when there are many leads~~ **Implemented** |
 | CRM integration | Automatically sync leads with other systems |
+| Rate limiting | Prevents abuse and protects the API from being overwhelmed by too many requests |
+| File size and type restrictions | Prevents storage abuse, ensures only valid resume files are uploaded, and improves security |
 
 ---
 
